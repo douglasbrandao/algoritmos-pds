@@ -3,9 +3,11 @@ clear all % limpar todas variáveis
 clc % limpar janela de comando
 
 ecg = load('ECG_noise.txt');
+% ecg = ecg(1:10000); % caso queira alterar a quantidade de amostras
 fs = 1200;
 
 % filtro para retirar os 60hz do ecg
+
 
 [n3, wn3] = cheb2ord(40/(fs/2), 72/(fs/2), 0.1, 40);
 [num3, den3] = cheby2(n3, 40, wn3);
@@ -28,7 +30,7 @@ batidas = 0;
 % picos que estão ao seu lado (esquerda e direita)
 
 for i = 2 : length(ecg)-1 % inicia em 2 pois iremos comparar com valores anteriores (indice 0 matlab)
-    if(ecg(i) > ecg(i-1) & ecg(i) > ecg(i+1) & ecg(i) > 1)
+    if(ecg(i) > ecg(i-1) & ecg(i) > ecg(i+1) & ecg(i) > 2.5)
         batidas = batidas + 1;
     end
 end

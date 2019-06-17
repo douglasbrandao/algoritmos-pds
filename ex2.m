@@ -1,22 +1,64 @@
-[y, fs] = audioread('audio.mp3');
-x = y + 2 * randn(length(y), 1);
+close all % fechar todas figuras
+clear all % limpar todas variáveis
+clc % limpar janela de comando
+
+% ler o áudio
+
+[audio,fs] = audioread('teste.m4a');
 periodo = 1/fs;
-tempo = periodo * length(y);
-t = linspace(0, tempo, length(y));
+tempo = periodo * length(audio);
+t = linspace(0, tempo, length(audio));
 
-subplot(5,1,1);
-plot(t, y);
-title('Sinal original');
+fc = [4000 10000]; % frequencias de corte
+wn = fc/(fs/2); % normalizada
+n = 1000; % ordem do filtro
+den = 1; %  filtro fir então den = 1
 
-subplot(5,1,2);
-tempo2 = periodo * length(x);
-t2 = linspace(0, tempo2, length(x));
-plot(t2, x);
-title('Sinal com ruído');
-audiowrite('ruido.wav', x, fs);
+janela = fir1(n, wn, 'stop');
+filtro_retangular = filter(janela, den, audio);
+audiowrite('testekarine.wav', filtro_retangular, fs); % após usar o filtro, é gravado um novo audio
 
-subplot(5,1,3);
-my_fft(y, fs);
-title('Frequência do sinal original');
+% gráficos subplotados em uma janela
 
-subplot(5,1,4);
+subplot(4,1,1);
+plot(t, audio);
+title('Sinal do áudio com ruído no domínio do tempo');
+xlabel('Tempo (s)');
+ylabel('Amplitude');
+
+subplot(4,1,2);
+my_fft(audio, fs);
+title('Frequência do sinal do áudio original com ruído');
+
+subplot(4,1,3);
+plot(t, filtro_retangular);
+title('Sinal do áudio filtrado no domínio do tempo');
+xlabel('Tempo (s)');
+ylabel('Amplitude');
+
+subplot(4,1,4);
+my_fft(filtro_retangular, fs);
+title('Frequência do sinal filtrado');
+
+% gráficos plotados em janela
+
+figure(2);
+plot(t, audio);
+title('Sinal do áudio com ruído no domínio do tempo');
+xlabel('Tempo (s)');
+ylabel('Amplitude');
+
+figure(3);
+my_fft(audio, fs);
+title('Frequência do sinal do áudio original com ruído');
+
+figure(4);
+plot(t, filtro_retangular);
+title('Sinal do áudio filtrado no domínio do tempo');
+xlabel('Tempo (s)');
+ylabel('Amplitude');
+
+figure(5);
+my_fft(filtro_retangular, fs);
+title('Frequência do sinal filtrado');
+
